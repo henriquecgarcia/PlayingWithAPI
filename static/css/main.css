@@ -5,7 +5,7 @@
 html {
 	font-size: 10px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	overflow: hidden;
+	overflow-x: hidden;
 }
 body {
 	background-image: url("https://github.com/henriquecgarcia/PS-Akaer/blob/master/Teste_Front-End/bg_honeycomb.jpg?raw=true");
