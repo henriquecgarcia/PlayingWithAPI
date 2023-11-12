@@ -4,7 +4,29 @@ $().ready(function () {
 		let characters = data.results;
 		const display = $("#display-chars");
 		characters.forEach(function (character) {
-			display.append("<div class='character'><img src='" + character.image + "'><div class='right'><h3>" + character.name + "</h3></div>");
+			let str = "<div class='char'><img src='" +
+				character.image +
+				"'>";
+			str += "<div class='right'>";
+
+			str += "<p class='char-name'>Nome: <span>" + character.name + "<span></p>";
+			str += "<p class='char-status'>Status: ";
+			switch (character.status) {
+				case "Alive":
+					str += "<span class='col-verde bold'>" + character.status + "</span>";
+					break;
+				case "Dead":
+					str += "<span class='col-vermelho bold'>" + character.status + "</span>";
+					break;
+				case "unknown":
+					str += "<span class='bold underline'>" + character.status + "</span>";
+					break;
+			}
+			str += "</p>";
+
+			str += "</div>";
+			str += "</div>";
+			display.append(str);
 		});
 	});
 });

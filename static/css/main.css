@@ -10,6 +10,7 @@ html {
 body {
 	background-image: url("https://github.com/henriquecgarcia/PS-Akaer/blob/master/Teste_Front-End/bg_honeycomb.jpg?raw=true");
 	color: #fff;
+	padding-bottom: 70px;
 }
 h1 {
 	font-size: 30px;
@@ -130,14 +131,18 @@ a:hover, a:focus, a:active {
 	align-items: center;
 	justify-items: center;
 	margin-top: 20px;
+	overflow-y: hidden;
+	align-items: center;
+	justify-items: center;
 }
 #display-chars .char {
 	display: -ms-inline-grid;
-	width: 40px;
-	height: 20px;
+	max-width: 310px;
+	max-height: 150px;
 	padding: 10px;
 	grid-template-columns: auto auto;
 	grid-template-rows: auto auto;
+	grid-auto-flow: row;
 }
 #display-chars .char img {
 	display: inline-block;
@@ -146,9 +151,30 @@ a:hover, a:focus, a:active {
 }
 #display-chars .char .right {
 	display: inline-block;
+	width: 50%;
+	height: 100%;
 	margin: 0;
 	padding: 0;
 	font-size: 10px;
+	padding-left: 10px;
+	line-break: auto;
+	font-size: 15px;
+}
+#display-chars .char .right .char-name {
+	font-size: 20px;
+}
+#display-chars .char .right .char-name span {
+	text-decoration: underline;
+	text-emphasis: bold;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+img:hover {
+	cursor: pointer;
+	transform: scale(1.2);
 }
 
 .footer {
