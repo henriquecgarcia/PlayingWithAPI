@@ -20,13 +20,32 @@
 	</h1>
 	<div class="container">
 		<input type="text" id="char-search" placeholder="Search for a character">
-		<div id="display-chars"></div>
-		<div id="display-control">
-			<div id="display-prev">
-				&larr; Previous
+		<div class="display-control">
+			<div class="display-prev">
+				<button class="display-btn" >
+					&larr; Previous
+				</button>
 			</div>
-			<div id="display-next">
-				Next &rarr;
+			<div class="display-current">
+				Página <span id="display-page">1</span>
+			</div>
+			<div class="display-next">
+				<button class="display-btn" >
+					Next &rarr;
+				</button>
+			</div>
+		</div>
+		<div id="display-chars"></div>
+		<div class="display-control">
+			<div class="display-prev">
+				<button class="display-btn" >
+					&larr; Previous
+				</button>
+			</div>
+			<div class="display-next">
+				<button class="display-btn" >
+					Next &rarr;
+				</button>
 			</div>
 		</div>
 	</div>
