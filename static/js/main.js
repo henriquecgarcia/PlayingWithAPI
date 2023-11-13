@@ -13,7 +13,25 @@ function charInfo(character) {
 	"'></div>";
 	str += "<div class='right'>";
 
-	str += "<p class='char-name'>Nome: <span>" + character.name + "</span> (";
+	str += "<p class='char-name'>Nome: ";
+	
+	str += "<span class='gender'>";
+	switch (character.gender) {
+		case "Male":
+			str += "♂️";
+			break;
+		case "Female":
+			str += "♀️";
+			break;
+		case "unknown":
+			str += "🤷";
+			break;
+		default:
+			str += "⚧️" + character.gender;
+	}
+	str += "</span> ";
+
+	str += "<span>" + character.name + "</span> (";
 	switch (character.status) {
 		case "Alive":
 			str += "<span class='col-verde'>" + character.status + "</span>";
