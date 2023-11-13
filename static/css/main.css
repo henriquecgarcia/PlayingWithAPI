@@ -195,7 +195,7 @@ a:hover, a:focus, a:active {
 #display-chars .char .right .char-name {
 	font-size: 20px;
 }
-#display-chars .char .right .char-name span:not(:last-child) {
+#display-chars .char .right .char-name span:not(:last-child):not(:first-child) {
 	text-decoration: underline;
 	text-emphasis: bold;
 }
