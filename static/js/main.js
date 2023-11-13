@@ -1,35 +1,47 @@
 let page = 1;
 let totalPages = 0;
-let storedCharsPerPage = [];
 let chars = [];
+let showPages = [];
+let searchVal = "";
 
-function updateChars() {
-	if (storedCharsPerPage[page] != null) {
+function charInfo(character) {
+	let str = "<div class='char'>";
+	str += "<div class='left'><img src='" +
+		character.image +
+	"' alt='" +
+		character.name +
+	"'></div>";
+	str += "<div class='right'>";
+
+	str += "<p class='char-name'>Nome: <span>" + character.name + "</span> (";
+	switch (character.status) {
+		case "Alive":
+			str += "<span class='col-verde'>" + character.status + "</span>";
+			break;
+		case "Dead":
+			str += "<span class='col-vermelho'>" + character.status + "</span>";
+			break;
+		case "unknown":
+			str += "<span class='italic'>" + character.status + "</span>";
+			break;
+	}
+	str += ")";
+	str += "<p class='char-species'>Espécie: <span>" + character.species + "</span></p>";
+	str += "<p class='char-origin'>Origem: <span>" + character.origin.name + "</span></p>";
+	str += "<p class='char-location'>Localização: <span>" + character.location.name + "</span></p>";
+
+	str += "</div>";
+
+	str += "</div>";
+	return str;
+}
+
+function updateChars(force = false) {
+	if (showPages[page] != null && !force) {
 		const display = $("#display-chars");
 		display.html("");
-		storedCharsPerPage[page].forEach(function (character) {
-			let str = "<div class='char'><img src='" +
-			character.image +
-			"'>";
-			str += "<div class='right'>";
-
-			str += "<p class='char-name'>Nome: <span>" + character.name + "</span></p>";
-			str += "<p class='char-status'>Status: ";
-			switch (character.status) {
-				case "Alive":
-					str += "<span class='col-verde bold'>" + character.status + "</span>";
-					break;
-				case "Dead":
-					str += "<span class='col-vermelho bold'>" + character.status + "</span>";
-					break;
-				case "unknown":
-					str += "<span class='bold underline'>" + character.status + "</span>";
-					break;
-			}
-			str += "</p>";
-
-			str += "</div>";
-			str += "</div>";
+		showPages[page].forEach(function (character) {
+			let str = charInfo(character);
 			display.append(str);
 		});
 		if (page > 1) {
@@ -45,62 +57,106 @@ function updateChars() {
 		$("#display-page").html(page);
 		return;
 	}
-	storedCharsPerPage[page] = [];
 	$.get("https://rickandmortyapi.com/api/character?page=" + page, function (data) {
-		console.log(data);
-		totalPages = data.info.pages;
 		let characters = data.results;
 		const display = $("#display-chars");
 		display.html("");
 		characters.forEach(function (character) {
-			storedCharsPerPage[page].push(character);
-			let str = "<div class='char'><img src='" +
-				character.image +
-				"'>";
-			str += "<div class='right'>";
-
-			str += "<p class='char-name'>Nome: <span>" + character.name + "</span></p>";
-			str += "<p class='char-status'>Status: ";
-			switch (character.status) {
-				case "Alive":
-					str += "<span class='col-verde bold'>" + character.status + "</span>";
-					break;
-				case "Dead":
-					str += "<span class='col-vermelho bold'>" + character.status + "</span>";
-					break;
-				case "unknown":
-					str += "<span class='bold underline'>" + character.status + "</span>";
-					break;
-			}
-			str += "</p>";
-
-			str += "</div>";
-			str += "</div>";
+			chars[character.id] = character;
+			let str = charInfo(character);
 			display.append(str);
 		});
-		if (data.info.prev == null) {
-			$(".display-prev").hide();
-		} else {
+		if (page > 1) {
 			$(".display-prev").show();
-		}
-		if (data.info.next == null) {
-			$(".display-next").hide();
 		} else {
+			$(".display-prev").hide();
+		}
+		if (page < totalPages) {
 			$(".display-next").show();
+		} else {
+			$(".display-next").hide();
 		}
 		$("#display-page").html(page);
 	});
 }
-$().ready(function () {
+
+function separatePages( toShow ) {
+	page = 1;
+	showPages = [];
+	let maxPerPage = 20;
+	toShow.forEach(function (character) {
+		if (showPages[page] == null) {
+			showPages[page] = [];
+		}
+		showPages[page].push(character);
+		if (showPages[page].length >= maxPerPage) {
+			page++;
+		}
+	});
+	totalPages = page;
+	page = 1;
+	$("#display-total").html(totalPages);
 	updateChars();
+}
+
+function preLoadAllPages() {
+	let hasNext = true;
+	while (hasNext) {
+		$.ajax({
+			url: "https://rickandmortyapi.com/api/character?page=" + page,
+			async: false,
+			success: function (data) {
+				hasNext = data.info.next != null;
+				showPages[page] = [];
+				let characters = data.results;
+				characters.forEach(function (character) {
+					chars[character.id] = character;
+					showPages[page].push(character);
+				});
+				page++;
+			}
+		});
+	}
+	totalPages = page-1;
+	page = 1;
+	$("#display-total").html(totalPages);
+	updateChars();
+}
+$().ready(function () {
+	preLoadAllPages();
 	$(".display-prev .display-btn").click(function () {
 		if (page > 1) {
 			page--;
 			updateChars();
+
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
 		}
 	});
 	$(".display-next .display-btn").click(function () {
 		page++;
 		updateChars();
+		document.body.scrollTop = 0;
+		document.documentElement.scrollTop = 0;
 	});
+});
+$("#char-search").keyup(() => {
+	searchVal = $("#char-search").val();
+	let display = $("#display-chars");
+	display.html("");
+	let foundChars = [];
+	if (searchVal == "") {
+		separatePages(chars);
+		return;
+	}
+	chars.forEach(function (character) {
+		if (character.name.toLowerCase().includes(searchVal.toLowerCase())) {
+			foundChars.push(character);
+		}
+	});
+	if (foundChars.length <= 0) {
+		display.html("<p class='italic'>Nenhum personagem encontrado</p>");
+	} else {
+		separatePages(foundChars);
+	}
 });
