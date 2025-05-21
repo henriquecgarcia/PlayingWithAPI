@@ -5,7 +5,8 @@ let showPages = [];
 let searchVal = "";
 
 function charInfo(character) {
-	let str = "<div class='char'>";
+	// let str = "<div class='char'>";
+	let str = "";
 	str += "<div class='left'><img src='" +
 		character.image +
 	"' alt='" +
@@ -31,7 +32,7 @@ function charInfo(character) {
 	}
 	str += "</span> ";
 
-	str += "<span>" + character.name + "</span> (";
+	str += "<span class='actual-name'>" + character.name + "</span> (";
 	switch (character.status) {
 		case "Alive":
 			str += "<span class='col-verde'>" + character.status + "</span>";
@@ -50,7 +51,7 @@ function charInfo(character) {
 
 	str += "</div>";
 
-	str += "</div>";
+	// str += "</div>";
 	return str;
 }
 
@@ -60,7 +61,20 @@ function updateChars(force = false) {
 		display.html("");
 		showPages[page].forEach(function (character) {
 			let str = charInfo(character);
-			display.append(str);
+			let new_element = document.createElement("div");
+			new_element.className = "char";
+			new_element.dataset.id = character.id;
+			new_element.dataset.name = character.name;
+			new_element.innerHTML = str;
+			display.append(new_element);
+			// display.append(str);
+			new_element.onclick = function () {
+				let dataset = this.dataset;
+				let name = dataset.name;
+				let id = dataset.id;
+				window.location.href = "char_page.html?name=" + name + "&id=" + id;
+			};
+			// new_element.fadeIn(1000);
 		});
 		if (page > 1) {
 			$(".display-prev").show();
